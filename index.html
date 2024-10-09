@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playwright Test Run Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    .summary {
+      margin: 20px 0;
+    }
+    .summary p {
+      margin: 5px 0;
+    }
+    canvas {
+      margin: 20px 0;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Playwright Test Run Dashboard</h1>
+
+    <!-- Summary section -->
+    <div class="summary">
+      <h2>Summary</h2>
+      <p><strong>Date:</strong> <span id="date"></span></p>
+      <p><strong>Start Time:</strong> <span id="startTime"></span></p>
+      <p><strong>Total Time Taken:</strong> <span id="totalTime"></span></p>
+      <p><strong>Total Tests:</strong> <span id="totalTests"></span></p>
+      <p><strong>Total Passed:</strong> <span id="totalPassed"></span></p>
+      <p><strong>Total Failed:</strong> <span id="totalFailed"></span></p>
+      <p><strong>Total Flaky:</strong> <span id="totalFlaky"></span></p>
+      <p><strong>Workers Used:</strong> <span id="workersUsed"></span></p>
+    </div>
+
+    <!-- Bar chart section -->
+    <canvas id="testChart"></canvas>
+  </div>
+
+  <script>
+    // Fetch the JSON data from the Playwright test result file
+    fetch('test-result.json')
+      .then(response => response.json())
+      .then(data => {
+        // Populate the summary section with data
+        document.getElementById('date').textContent = new Date(data.date).toLocaleString();
+        document.getElementById('startTime').textContent = new Date(data.startTime).toLocaleString();
+        document.getElementById('totalTime').textContent = data.timeTaken;
+        document.getElementById('totalTests').textContent = data.totalTests;
+        document.getElementById('totalPassed').textContent = data.totalPassed;
+        document.getElementById('totalFailed').textContent = data.totalFailed;
+        document.getElementById('totalFlaky').textContent = data.totalFlaky;
+        document.getElementById('workersUsed').textContent = data.workersUsed;
+
+        // Create the bar chart using Chart.js
+        const ctx = document.getElementById('testChart').getContext('2d');
+        const testChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Passed', 'Failed', 'Flaky'],
+            datasets: [{
+              label: 'Test Results',
+              data: [data.totalPassed, data.totalFailed, data.totalFlaky],
+              backgroundColor: ['#4caf50', '#f44336', '#ff9800'],
+              borderColor: ['#388e3c', '#d32f2f', '#f57c00'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      })
+      .catch(error => console.error('Error loading JSON data:', error));
+  </script>
+</body>
+</html>

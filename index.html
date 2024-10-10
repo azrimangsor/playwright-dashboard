@@ -26,7 +26,7 @@
       margin: 20px 0;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -47,7 +47,7 @@
 
     <!-- Bar chart section -->
     <canvas id="testChart" style="width:100%;max-width:600px"></canvas>
-  </div>
+  
 
   <script>
     // Fetch the JSON data from the Playwright test result file
@@ -89,5 +89,6 @@
       })
       .catch(error => console.error('Error loading JSON data:', error));
   </script>
+  </div>
 </body>
 </html>
